@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package mountmanager;
+
+service MountManager {
+  // 创建/挂载一个 mergerfs 合并挂载点
+  rpc CreateMount(CreateMountRequest) returns (CreateMountResponse);
+
+  // 卸载/删除一个挂载点
+  rpc RemoveMount(RemoveMountRequest) returns (RemoveMountResponse);
+
+  // 列出由服务管理的挂载点（DB 中记录 + 当前 mount 输出校验）
+  rpc ListMounts(ListMountsRequest) returns (ListMountsResponse);
+
+  // 查询单个挂载点状态
+  rpc GetMount(GetMountRequest) returns (GetMountResponse);
+}
+
+message CreateMountRequest {
+  string name = 1; // 将被挂载为 /tmp/data/<name>
+  repeated string src_dirs = 2; // 源目录数组（绝对路径）
+  bool allow_force_unmount = 3; // 如果目标已经挂载，是否先 fusermount -uz 再挂
+  string options = 4; // (可选) mergerfs 额外 mount options
+}
+
+message CreateMountResponse {
+  bool ok = 1;
+  string message = 2;
+}
+
+message RemoveMountRequest {
+  string name = 1; // 要卸载的挂载点名（/tmp/data/<name>）
+  bool force = 2; // 如果 true 尝试 fusermount -uz 再 umount
+}
+
+message RemoveMountResponse {
+  bool ok = 1;
+  string message = 2;
+}
+
+message ListMountsRequest {}
+
+message MountEntry {
+  string name = 1;
+  repeated string src_dirs = 2;
+  string mount_point = 3; // /tmp/data/<name>
+  bool mounted = 4; // 是否在当前 mount 列表里被确认为挂载
+  string mount_opts = 5;
+  string created_at = 6;
+}
+
+message ListMountsResponse {
+  repeated MountEntry entries = 1;
+}
+
+message GetMountRequest {
+  string name = 1;
+}
+
+message GetMountResponse {
+  MountEntry entry = 1;
+  bool found = 2;
+}
