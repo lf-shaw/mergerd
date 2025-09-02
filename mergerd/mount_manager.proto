@@ -17,10 +17,10 @@ service MountManager {
 }
 
 message CreateMountRequest {
-  string name = 1; // 将被挂载为 /tmp/data/<name>
-  repeated string src_dirs = 2; // 源目录数组（绝对路径）
+  string dest_path = 1;          // 目标挂载路径（绝对路径）
+  repeated string branches = 2; // 源目录数组（绝对路径）
   bool allow_force_unmount = 3; // 如果目标已经挂载，是否先 fusermount -uz 再挂
-  string options = 4; // (可选) mergerfs 额外 mount options
+  string options = 4;           // (可选) mergerfs 额外 mount options
 }
 
 message CreateMountResponse {
@@ -29,8 +29,9 @@ message CreateMountResponse {
 }
 
 message RemoveMountRequest {
-  string name = 1; // 要卸载的挂载点名（/tmp/data/<name>）
-  bool force = 2; // 如果 true 尝试 fusermount -uz 再 umount
+  string dest_path = 1;          // 目标挂载路径（绝对路径）
+  bool recursive = 2;           // 是否递归删除子挂载
+  bool force = 3;               // 如果 true 尝试 fusermount -uz 再 umount
 }
 
 message RemoveMountResponse {
@@ -38,15 +39,17 @@ message RemoveMountResponse {
   string message = 2;
 }
 
-message ListMountsRequest {}
+message ListMountsRequest {
+  string dest_path = 1;    // 目标挂载根目录目录（绝对路径），如果不指定则列出所有的挂载
+  bool recursive = 2;     // 是否递归列出子挂载
+}
 
 message MountEntry {
-  string name = 1;
-  repeated string src_dirs = 2;
-  string mount_point = 3; // /tmp/data/<name>
-  bool mounted = 4; // 是否在当前 mount 列表里被确认为挂载
-  string mount_opts = 5;
-  string created_at = 6;
+  string dest_path = 1;            // 目标挂载路径
+  repeated string branches = 2;    // 挂载的源目录数组（绝对路径）
+  bool mounted = 3;                // 是否在当前 mount 列表里被确认为挂载
+  string mount_opts = 4;           // mergerfs mount options
+  string created_at = 5;           // 创建时间
 }
 
 message ListMountsResponse {
@@ -54,7 +57,7 @@ message ListMountsResponse {
 }
 
 message GetMountRequest {
-  string name = 1;
+  string dest_path = 1;            // 目标挂载路径
 }
 
 message GetMountResponse {

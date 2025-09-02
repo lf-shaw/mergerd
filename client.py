@@ -32,12 +32,12 @@ def main():
     sub = parser.add_subparsers(dest="cmd")
 
     p1 = sub.add_parser("create")
-    p1.add_argument("--name", required=True)
+    p1.add_argument("--dest", required=True)
     p1.add_argument("--src", nargs="+", required=True)
     p1.add_argument("--force", action="store_true")
 
     p2 = sub.add_parser("remove")
-    p2.add_argument("--name", required=True)
+    p2.add_argument("--dest", required=True)
     p2.add_argument("--force", action="store_true")
 
     p3 = sub.add_parser("list")
@@ -50,36 +50,35 @@ def main():
 
     if args.cmd == "create":
         req = pb.CreateMountRequest(
-            name=args.name, src_dirs=args.src, allow_force_unmount=args.force
+            dest_path=args.dest,
+            branches=args.src,
+            allow_force_unmount=args.force,
         )
         resp = stub.CreateMount(req)
         print("OK:", resp.ok, "msg:", resp.message)
     elif args.cmd == "remove":
-        req = pb.RemoveMountRequest(name=args.name, force=args.force)
+        req = pb.RemoveMountRequest(dest_path=args.dest, force=args.force)
         resp = stub.RemoveMount(req)
         print("OK:", resp.ok, "msg:", resp.message)
     elif args.cmd == "list":
         resp = stub.ListMounts(pb.ListMountsRequest())
         for e in resp.entries:
             print(
-                e.name,
-                "->",
-                e.mount_point,
+                e.dest_path,
                 "mounted=",
                 e.mounted,
-                "srcs=",
-                list(e.src_dirs),
+                "branches=",
+                list(e.branches),
             )
     elif args.cmd == "get":
-        resp = stub.GetMount(pb.GetMountRequest(name=args.name))
+        resp = stub.GetMount(pb.GetMountRequest(dest_path=args.dest))
         if not resp.found:
             print("Not found")
         else:
             e = resp.entry
-            print("Name:", e.name)
-            print("Mount point:", e.mount_point)
+            print("Mount point:", e.dest_path)
             print("Mounted:", e.mounted)
-            print("Sources:", list(e.src_dirs))
+            print("Sources:", list(e.branches))
     else:
         parser.print_help()
 
