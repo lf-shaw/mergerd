@@ -1,6 +1,6 @@
 # mergerd
 
-基于 mergerfs 的分布式挂载管理服务
+基于 **gRPC** 的 mergerfs 挂载管理服务
 
 ---
 
@@ -97,6 +97,7 @@ python client.py --addr server_ip:50051 \
 - 客户端与服务端通信需证书匹配，防止未授权访问。
 - 挂载信息持久化于 `mergerd.db`，如需迁移/备份请注意同步数据库文件。
 - 仅支持 Linux/FUSE 环境，Windows/macOS 暂不支持。
+- 不要将挂载点直接用于 Docker 容器挂载，应通过 `mergerfs` 将挂载点映射到其他的容器挂载点或者容器挂载点的子文件夹，从而保持容器挂载点不会有 `mergerfs` 的挂载与卸载。
 
 ---
 
