@@ -82,9 +82,8 @@ StandardOutput=journal
 StandardError=journal
 
 NoNewPrivileges=true
-PrivateTmp=true
-ProtectSystem=full
-ProtectHome=read-only
+PrivateMounts=no
+ProtectSystem=no
 
 [Install]
 WantedBy=multi-user.target
