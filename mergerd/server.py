@@ -368,11 +368,11 @@ class MountManagerServicer(grpc_pb.MountManagerServicer):
         # produce mergerfs command
         # mergerfs SRC1:SRC2:... mount_point -o defaults,allow_other,use_ino,<options>
         src_spec = ":".join(branches)
-        mount_opts = "defaults,allow_other,use_ino"
+        mount_opts = "defaults,allow_other,use_ino,ro"
         if options:
             mount_opts += "," + options
 
-        cmd = ["mergerfs", src_spec, dest_path, "-o", mount_opts]
+        cmd = ["/usr/bin/mergerfs", src_spec, dest_path, "-o", mount_opts]
         try:
             run_cmd(cmd, check=True)
         except Exception as e:
