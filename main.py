@@ -5,9 +5,9 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--listen", default="0.0.0.0:50051")
-    parser.add_argument("--server-cert", default="server.crt")
-    parser.add_argument("--server-key", default="server.key")
-    parser.add_argument("--ca-cert", default="ca.crt")
+    parser.add_argument("--server-cert", default="./cert/server.crt")
+    parser.add_argument("--server-key", default="./cert/server.key")
+    parser.add_argument("--ca-cert", default="./cert/ca.crt")
     args = parser.parse_args()
     serve(
         listen_addr=args.listen,

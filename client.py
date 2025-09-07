@@ -26,9 +26,9 @@ def create_stub(addr, ca, cert, key):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--addr", default="localhost:50051")
-    parser.add_argument("--ca", default="ca.crt")
-    parser.add_argument("--cert", default="client.crt")
-    parser.add_argument("--key", default="client.key")
+    parser.add_argument("--ca", default="./cert/ca.crt")
+    parser.add_argument("--cert", default="./cert/client.crt")
+    parser.add_argument("--key", default="./cert/client.key")
     sub = parser.add_subparsers(dest="cmd")
 
     p1 = sub.add_parser("create")

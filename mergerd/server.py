@@ -339,11 +339,11 @@ class MountManagerServicer(grpc_pb.MountManagerServicer):
         allow_force = request.allow_force_unmount
         options = request.options or ""
 
-        # ensure src dirs exist
-        for d in branches:
-            if not os.path.isdir(d):
+        # ensure branches dirs exist
+        for s in branches:
+            if not os.path.isdir(s):
                 return pb.CreateMountResponse(
-                    ok=False, message=f"source dir does not exist: {d}"
+                    ok=False, message=f"branches {s} does not exist"
                 )
 
         os.makedirs(dest_path, exist_ok=True)
